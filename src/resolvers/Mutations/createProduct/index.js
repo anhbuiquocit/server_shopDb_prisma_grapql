@@ -1,20 +1,22 @@
 import { mutationField, stringArg } from "nexus";
 import { v4 as uuidv4 } from "uuid";
+import { ApolloError } from "apollo-server-errors";
 export const createProductResolver = async (
   parent,
   { categoryId, title },
   context
 ) => {
-  console.log("categoryId: ", categoryId);
-  console.log("title: ", title);
-  if (!categoryId || !title) throw new Error("Invalid input params");
-  const categoryFind = await context.prisma.category.findMany({
+  if (!categoryId || !title)
+    throw new ApolloError('INVALID INPUT PARAMS', '400');
+  await context.prisma.category.findMany({
     where: {
       categoryId,
     },
+  }).then(res => {
+    console.log('res: ', res);
   });
-  console.log("categoryFind: ", categoryFind);
-  if (!categoryFind) return "Invalid category";
+  
+  if (!categoryFind) throw new ApolloError('CATEGORY DOES NOT EXIST', '400');
   return await context.prisma.product
     .create({
       data: {
@@ -24,7 +26,6 @@ export const createProductResolver = async (
       },
     })
     .then((res) => {
-      console.log("res: ", res);
       if (res) return "create product succressfully!";
     })
     .catch((err) => {
