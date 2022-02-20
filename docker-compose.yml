@@ -1,0 +1,44 @@
+version: '3.1'
+services:
+  prisma:
+      image: prismagraphql/prisma:1.34
+      restart: always
+      ports:
+      - "4470:4466"
+      environment:
+        PRISMA_CONFIG: |
+          port: 4466
+          databases:
+            default:
+              connector: mysql
+              host: mysql
+              port: 3370
+              user: root
+              password: wMT9ABAAmyrju3wF
+  db:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - "3370:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: wMT9ABAAmyrju3wF
+    volumes:
+      - mysql:/var/lib/mysql
+      
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=root
+      - PMA_PORT=3306
+      - PMA_PASSWORD=wMT9ABAAmyrju3wF
+    depends_on:
+      - db
+    ports:
+      - 8870:80
+volumes:
+  mysql:
