@@ -1,23 +1,18 @@
 import { extendType, idArg } from "nexus";
-export const GetUserResolver = async (parent, {id}, context) => {
-//   let User;
-//   await context.prisma.db_user.findMany().then((res) => {
-//     console.log("res: ", res);
-//     User = res;
-//   });
-//   return User;
-return  await context.prisma.db_user.findMany({
+export const GetUserResolver = async (parent, { id }, context) => {
+  console.log('user token: ', context.userToken);
+  return await context.prisma.db_user.findMany({
     where: {
-        id,
-    }
-});
+      id,
+    },
+  });
 };
 export const GetUserDefinition = extendType({
   type: "Query",
   definition: (t) => {
     t.list.field("User", {
       type: "User",
-      args: {id: idArg()},
+      args: { id: idArg() },
       resolve: GetUserResolver,
     });
   },

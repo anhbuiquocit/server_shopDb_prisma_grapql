@@ -15,7 +15,7 @@ model Db_user {
   updateAt DateTime? @updatedAt
   fullName String   @db.VarChar(255)
   username String   @db.VarChar(40)
-  password String   @db.VarChar(40)
+  password String   @db.VarChar(120)
 }
 
 model Category {
